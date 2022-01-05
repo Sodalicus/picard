@@ -1,9 +1,0 @@
-Bedside lamp;bool;true;false;Wall socket
-Night lamp;bool;true;false;Wall socket
-Not Connected;bool;true;false;Wall socket
-Not Connected;bool;true;false;Wall socket
-Temperature;celsius;false;false;Temperature inside #1 - DS18B20
-Temperature;celsius;false;false;Temperature inside #2 - DHT11
-Humidity;percents;false;false;Humidity inside - DHT11
-Temperature;celsius;false;true;Temperature outside #1 - DS18B20
-Time alive;minutes;false;false;Arduino uptime

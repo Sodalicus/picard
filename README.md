@@ -13,8 +13,9 @@ Hardware so far:
 - wifi dongle
 - speakers for media
 - 2 relay modules and modified extension wall socket
-- 2 DS18B20 sensors
-- DHT11 sensor
+#- 2 DS18B20 sensors
+- 1 DS18B20 sensor
+#- DHT11 sensor
 - IR receiver & remote
 - 7-segment max7219 display
 
@@ -30,12 +31,13 @@ Media playing:
 
 For communication with Arduino by USB/serial:
 - pyserial
-- requests - for sending POSTs to main app
+#- requests - for sending POSTs to main app
+- selectors - for 
 
 For InfraRed communication by remote with Raspberry:
 - ir-keytable - for managing Linux IR
 - evdev - for catching rc events
-- requests - for sending POSTs to main app
+#- requests - for sending POSTs to main app
 
 For 7-segment display:
 - max7219 
@@ -43,7 +45,7 @@ For 7-segment display:
 Arduino libs:
 - OneWire
 - DallasTemperature
-- dht
+#- dht
 
 Useful guide for enabling IR on Raspberry:
 https://github.com/gordonturner/ControlKit/blob/master/Raspbian%20Setup%20and%20Configure%20IR.md

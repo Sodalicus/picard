@@ -1,0 +1,16 @@
+[Unit]
+Description = IR Receiver for picard 
+After = networking.target
+ 
+[Service]
+Type = simple
+ExecStart = /usr/bin/python3 /home/pi/Picard/modules/picard_main.py
+User = pi
+Group = pi
+Restart = on-failure
+#SyslogIdentifier = <Name of logs for the service>
+RestartSec = 5
+TimeoutStartSec = infinity
+ 
+[Install]
+WantedBy = multi-user.target
