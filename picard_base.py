@@ -10,6 +10,10 @@
 
 """
 import sqlite3
+from picard_lib import load_config
+
+SETTINGS = load_config()
+DBFILE = SETTINGS["DBFILE_PATH"]+SETTINGS["DBFILE"]
 
 DEF_RADIOS = [{ 'id': 1, 'name' : "chilldeep",\
         'url' :  "https://ch02.cdn.eurozet.pl/CHIDEP.mp3",\
@@ -28,7 +32,6 @@ DEF_SENSORS = [{ 'name' : "DS18B20", 'location' : "Inside",\
         'unit' : "Celsius" }]
 DEF_SENSORS_LIST = ["DS18B20", "Inside", "Celsius"]
 
-DBFILE = "/home/pi/Picard/base.db"
 
 class DBase():
     def __init__(self, file=DBFILE):
@@ -88,6 +91,7 @@ def get_volume():
     with DBase() as cur:
         cur.execute("SELECT volume FROM player WHERE id=?;", ("1"))
         data = cur.fetchone()
+        if data == None: return None
         volume = data['volume']
         print("x: {}".format(volume))
         return volume
@@ -105,6 +109,7 @@ def get_now_playing():
     with DBase() as cur:
         cur.execute("SELECT nowName,nowUrl FROM player WHERE id=?;", ("1"))
         data = cur.fetchone()
+        if data == None: return None
         return (data['nowName'], data['nowUrl'])
 
 
@@ -129,6 +134,7 @@ def get_recent_temp():
         cur.execute("""SELECT value,timestamp FROM readings WHERE sensor_id=1 ORDER BY \
                         timestamp DESC LIMIT 1;""")
         tempDate = cur.fetchone()
+        if tempDate == None: return None
         temp = tempDate['value']
         timestamp = tempDate['timestamp']
         return temp,timestamp
@@ -189,9 +195,9 @@ def main():
     #for radio in get_radios().items():
     #    print(radio)
     #    print()
-    print("volume")
-    update_volume(0)
-    print(get_volume())
+    #print("volume")
+    #update_volume(0)
+    #print(get_volume())
 
 
 if __name__ == "__main__":

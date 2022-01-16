@@ -22,34 +22,46 @@ Key down event values for my remote:
     to record 1 channel audio, 640x480 video from webcam
 ffmpeg -ac 1 -f alsa -i hw:1 -f v4l2 -video_size 640x480 -i /dev/video0 public/test.flv
 """
-from evdev import InputDevice # for reading IrDa
+
 import selectors # for reading irDa and sockets
 import socket
-from picard_7sd import SevenSegDisplay
 from picard_radio import Radio
 from picard_base import get_radios, get_def_radio, get_recent_temp
 from picard_serial import setup_serial, SerialConnection
+from picard_lib import load_config
 import time
 import sys
 import types
 
+SETTINGS = load_config()
+ADDR = (SETTINGS["SADDRESS"],SETTINGS["SPORT"])
+IRDA_DEV = SETTINGS["IRDA_DEV"]
+if SETTINGS["USE_DISPLAY"] == "True":
+    from picard_7sd import SevenSegDisplay
+    display = SevenSegDisplay()
+else:
+    from picard_lib import DummyDisplay
+    display = DummyDisplay()
+
+if SETTINGS["USE_IRDA"] == "True":
+    from evdev import InputDevice # for reading IrDa
+    #Setup InfraRed input - for remote control
+    irda = InputDevice(IRDA_DEV)
+    if irda:
+        selector.register(irda, selectors.EVENT_READ, data="remote")
+
+
 selector = selectors.DefaultSelector()
 
-display = SevenSegDisplay()
 
 radio = Radio()
 radios = get_radios()
 
-#Setup InfraRed input - for remote control
-irda = InputDevice('/dev/input/event0')
-if irda:
-    selector.register(irda, selectors.EVENT_READ, data="remote")
 
 #Setup socket input - for client program
-addr = ("127.0.0.1", 65432)
 lsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 lsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-lsock.bind(addr)
+lsock.bind(ADDR)
 lsock.listen()
 lsock.setblocking(False)
 selector.register(lsock, selectors.EVENT_READ, data="accept")
@@ -62,7 +74,7 @@ if ser:
 
 def accept_connection(key):
     socket = key.fileobj
-    conn, addr = socket.accept()
+    conn, ADDR = socket.accept()
     conn.setblocking(False)
     data = types.SimpleNamespace(inBuf=b'')
     selector.register(conn, selectors.EVENT_READ, data=data)
@@ -81,11 +93,6 @@ def service_connection(key):
         front_control(value)
         selector.unregister(conn)
         conn.close()
-
-
-
-
-
 
 
 def front_control(value):
@@ -156,6 +163,7 @@ def control(value):
         pass
 
 
+print("Starting picard...")
 t0 = time.time()
 t00 = time.time()
 while True:

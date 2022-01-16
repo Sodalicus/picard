@@ -18,7 +18,13 @@ import sqlite3
 from picard_client import send
 from picard_base import get_radios, save_radios, get_def_radio, get_recent_temp, get_now_playing
 from picard_base import get_volume
+from picard_lib import load_config
 
+SETTINGS = load_config()
+SSOCKET = (SETTINGS["SADDRESS"], SETTINGS["SPORT"])
+SSOCKET = ("127.0.0.1", 65432)
+CADDRESS = SETTINGS["CADDRESS"]
+CPORT = SETTINGS["CPORT"]
 
 app = Flask(__name__)
 app.config.update(dict(
@@ -26,8 +32,6 @@ app.config.update(dict(
     DATABASE=os.path.join(app.root_path, 'data.db'),
     SITE_NAME='Remote Control'
 ))
-
-addr = ("127.0.0.1", 65432)
 
 def get_db():
     """Create connection to database """
@@ -129,7 +133,7 @@ def switch():
 @app.route('/play_radio_def', methods=["POST"])
 def play_radio_def():
     """Play default radio"""
-    send("radio_def", addr)
+    send("radio_def", SSOCKET)
     #player.play("radio")
     #display.msg("radio")
     return redirect(url_for("index"))
@@ -137,7 +141,7 @@ def play_radio_def():
 @app.route('/radio_stop', methods=["POST"])
 def stop_radio():
     """Stop playing radio"""
-    send("radio_stop", addr)
+    send("radio_stop", SSOCKET)
     #player.play("radio")
     #display.msg("radio")
     return redirect(url_for("index"))
@@ -156,12 +160,12 @@ def beep():
 
 @app.route('/volumeup', methods=['POST'])
 def volume_up():
-    send("volume_up", addr)
+    send("volume_up", SSOCKET)
     return redirect(url_for("index"))
 
 @app.route('/volumedown', methods=['POST'])
 def volume_down():
-    send("volume_down", addr)
+    send("volume_down", SSOCKET)
     #player.volume_down()
     #vol = player.return_volume()
     #display.msg("Vol "+str(vol))
@@ -188,10 +192,10 @@ def radio_play():
     if request.method == "POST":
         formData = request.form
         msg =  formData['dropdown']
-        send(msg, addr)
+        send(msg, SSOCKET)
     return redirect(url_for("index"))
 
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host=CADDRESS, port=CPORT)

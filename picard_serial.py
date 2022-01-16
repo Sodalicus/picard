@@ -30,6 +30,7 @@ def find_usb_dev():
 def setup_serial():
     """setup serial object and return it"""
     usbPort = find_usb_dev()
+    if not usbPort: return None
     if os.path.exists(usbPort):
         ser = serial.Serial(
            port=usbPort,
@@ -121,6 +122,10 @@ def main():
                     msg = ""
                 else:
                     msg += incChar
+def main2():
+    print(type(find_usb_dev()))
+
+
 
 if __name__ == "__main__":
-    main()
+    main2()
