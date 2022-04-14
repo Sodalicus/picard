@@ -51,6 +51,7 @@ Useful guide for enabling IR on Raspberry:
 https://github.com/gordonturner/ControlKit/blob/master/Raspbian%20Setup%20and%20Configure%20IR.md
 
 TODO:
+- unpluing arduino causes an error, since dev file is gone
 - ir-keytable confiration on boot
 - make main app independent local-webapp, all options as optional modules
 \- sending sensors data to main app by POSTs

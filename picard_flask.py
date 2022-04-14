@@ -68,6 +68,22 @@ def read_devices_info():
                 for idx, value in enumerate(row)))
     return devices
 
+def get_radios_names():
+    radios = get_radios()
+    namesList = []
+    if radios == None: return None
+    for radio in radios.values():
+        if not (radio['name']) == None:
+            namesList.append(radio['name'])
+    return namesList
+
+def get_channel_number(name):
+    radios = get_radios()
+    for radio in radios.items():
+        if (radio[1]['name']) == name:
+            return(radio[0])
+    return None
+
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -101,7 +117,8 @@ def index():
     """
     defRadio = get_def_radio()
     tempDate = get_recent_temp()
-    radios = get_radios().keys()
+    radios = get_radios_names()
+
     nowPlaying = get_now_playing()
     volume = get_volume()
     if defRadio == None:
@@ -191,8 +208,9 @@ def radio_play():
     """get radio name from the drop-down input and play it."""
     if request.method == "POST":
         formData = request.form
-        msg =  formData['dropdown']
-        send(msg, SSOCKET)
+        radioName =  formData['dropdown']
+        radioChannel = get_channel_number(radioName)
+        send(radioChannel, SSOCKET)
     return redirect(url_for("index"))
 
 

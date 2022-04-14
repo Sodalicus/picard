@@ -85,7 +85,6 @@ def load_config():
         print("Configuration file not found. Running on defaults")
     return config
 
-print(load_config())
 
 
 class DummyDisplay:

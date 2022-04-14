@@ -147,12 +147,14 @@ def get_radios():
         radios = cur.fetchall()
         radiosDict = {}
         radioNumber = 1
+        if len(radios) == 0: return None
         for radio in radios:
             radioDict = { 'id': radio['id'], 'name' : radio['name']\
                     , 'url' : radio['url'], 'defRadio' : radio['defRadio'] }
             radiosDict['radio_0'+str(radioNumber) if radioNumber < 10 else 'radio_10'] = radioDict
             radioNumber += 1
         return radiosDict
+
 
 def get_def_radio():
     """Return dictionary of name and url of default radio from the radios table,\

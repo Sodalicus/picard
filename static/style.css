@@ -82,6 +82,7 @@ button.device_button {
     margin: 2px;
     padding: 2px;
     background: grey;
+    border-radius: 15px;
 }
 
 div.device_info {
